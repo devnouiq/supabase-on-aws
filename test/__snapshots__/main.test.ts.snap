@@ -8967,7 +8967,7 @@ applications:
           "Size": 3072,
         },
         "Handler": "index.handler",
-        "MemorySize": 2040,
+        "MemorySize": 2048,
         "Role": Object {
           "Fn::GetAtt": Array [
             "StudioRepositoryImportFunctionServiceRoleC6B8ED58",
