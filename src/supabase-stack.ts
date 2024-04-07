@@ -195,15 +195,15 @@ export class SupabaseStack extends FargateStack {
     const namespaceName = 'supabase.internal';
 
     /** ECS Cluster for Supabase components */
-    // const cluster = new ecs.Cluster(this, 'Cluster', {
-    //   enableFargateCapacityProviders: true,
-    //   containerInsights: false,
-    //   defaultCloudMapNamespace: {
-    //     name: namespaceName,
-    //     useForServiceConnect: true,
-    //   },
-    //   vpc,
-    // });
+    const cluster = new ecs.Cluster(this, 'Cluster', {
+      enableFargateCapacityProviders: true,
+      containerInsights: false,
+      defaultCloudMapNamespace: {
+        name: namespaceName,
+        useForServiceConnect: true,
+      },
+      vpc,
+    });
 
     /** PostgreSQL Database with Secrets */
     const db = new SupabaseDatabase(this, 'Database', {
@@ -212,11 +212,11 @@ export class SupabaseStack extends FargateStack {
     });
 
     /** SMTP Credentials */
-    // const smtp = new SesSmtp(this, 'Smtp', {
-    //   region: sesRegion.valueAsString,
-    //   email: senderEmail.valueAsString,
-    //   workMailEnabled: workMailEnabled,
-    // });
+    const smtp = new SesSmtp(this, 'Smtp', {
+      region: sesRegion.valueAsString,
+      email: senderEmail.valueAsString,
+      workMailEnabled: workMailEnabled,
+    });
 
     // Overwrite ACU
     (db.cluster.node.defaultChild as rds.CfnDBCluster).serverlessV2ScalingConfiguration = {
@@ -259,7 +259,7 @@ export class SupabaseStack extends FargateStack {
     const serviceRoleKey = jwtSecret.genApiKey('ServiceRoleKey', { roleName: 'service_role', issuer: 'supabase', expiresIn: '10y' });
 
     /** The load balancer for Kong Gateway */
-    // const loadBalancer = new elb.ApplicationLoadBalancer(this, 'LoadBalancer', { internetFacing: true, vpc });
+    const loadBalancer = new elb.ApplicationLoadBalancer(this, 'LoadBalancer', { internetFacing: true, vpc });
 
     /** CloudFront Prefix List */
     const cfPrefixList = new PrefixList(this, 'CloudFrontPrefixList', { prefixListName: 'com.amazonaws.global.cloudfront.origin-facing' });
