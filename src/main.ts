@@ -15,7 +15,7 @@ const synthesizer = (isCfnPublishing)
 
 const app = new App();
 
-new SupabaseWafStack(app, 'SupabaseWaf', { env: { region: 'us-east-1' } });
+// new SupabaseWafStack(app, 'SupabaseWaf', { env: { region: 'us-east-1' } });
 
 new SupabaseStack(app, 'Supabase', { env, synthesizer });
 

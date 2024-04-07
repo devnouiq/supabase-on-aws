@@ -165,7 +165,7 @@ export class SupabaseStack extends FargateStack {
     const sesRegion = new cdk.CfnParameter(this, 'SesRegion', {
       description: 'Amazon SES used for SMTP server. If you want to use Amazon WorkMail, need to set us-east-1, us-west-2 or eu-west-1.',
       type: 'String',
-      default: 'us-west-2',
+      default: 'ap-south-1',
       allowedValues: ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'ap-south-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-northeast-3', 'ap-southeast-1', 'ap-southeast-2', 'ca-central-1', 'eu-central-1', 'eu-west-1', 'eu-west-2', 'eu-west-3', 'eu-north-1', 'sa-east-1'],
     });
 
@@ -195,15 +195,15 @@ export class SupabaseStack extends FargateStack {
     const namespaceName = 'supabase.internal';
 
     /** ECS Cluster for Supabase components */
-    const cluster = new ecs.Cluster(this, 'Cluster', {
-      enableFargateCapacityProviders: true,
-      containerInsights: false,
-      defaultCloudMapNamespace: {
-        name: namespaceName,
-        useForServiceConnect: true,
-      },
-      vpc,
-    });
+    // const cluster = new ecs.Cluster(this, 'Cluster', {
+    //   enableFargateCapacityProviders: true,
+    //   containerInsights: false,
+    //   defaultCloudMapNamespace: {
+    //     name: namespaceName,
+    //     useForServiceConnect: true,
+    //   },
+    //   vpc,
+    // });
 
     /** PostgreSQL Database with Secrets */
     const db = new SupabaseDatabase(this, 'Database', {
@@ -212,11 +212,11 @@ export class SupabaseStack extends FargateStack {
     });
 
     /** SMTP Credentials */
-    const smtp = new SesSmtp(this, 'Smtp', {
-      region: sesRegion.valueAsString,
-      email: senderEmail.valueAsString,
-      workMailEnabled: workMailEnabled,
-    });
+    // const smtp = new SesSmtp(this, 'Smtp', {
+    //   region: sesRegion.valueAsString,
+    //   email: senderEmail.valueAsString,
+    //   workMailEnabled: workMailEnabled,
+    // });
 
     // Overwrite ACU
     (db.cluster.node.defaultChild as rds.CfnDBCluster).serverlessV2ScalingConfiguration = {
@@ -259,7 +259,7 @@ export class SupabaseStack extends FargateStack {
     const serviceRoleKey = jwtSecret.genApiKey('ServiceRoleKey', { roleName: 'service_role', issuer: 'supabase', expiresIn: '10y' });
 
     /** The load balancer for Kong Gateway */
-    const loadBalancer = new elb.ApplicationLoadBalancer(this, 'LoadBalancer', { internetFacing: true, vpc });
+    // const loadBalancer = new elb.ApplicationLoadBalancer(this, 'LoadBalancer', { internetFacing: true, vpc });
 
     /** CloudFront Prefix List */
     const cfPrefixList = new PrefixList(this, 'CloudFrontPrefixList', { prefixListName: 'com.amazonaws.global.cloudfront.origin-facing' });
